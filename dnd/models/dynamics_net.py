@@ -36,23 +36,8 @@ class DND(nn.Module):
 
         self._preset_cfg = cfg['PRESET']
         self.seq_len = self._preset_cfg['SEQLEN']
-        self.n_layers = cfg['TGRU']['NUM_LAYERS']
-        hidden_size = cfg['TGRU']['HIDDEN_SIZE']
-        bidirectional = cfg['TGRU']['BIDIRECTIONAL']
-        add_linear = cfg['TGRU']['ADD_LINEAR']
-        use_residual = cfg['TGRU']['RESIDUAL']
-        self.train_type = cfg['TRAIN_TYPE']
-        self.eval_type = cfg['EVAL_TYPE']
 
         pretrained_enc = cfg['PRETRAIN_ENC']
-
-        # self.encoder = TemporalEncoder(
-        #     n_layers=self.n_layers,
-        #     hidden_size=hidden_size,
-        #     bidirectional=bidirectional,
-        #     add_linear=add_linear,
-        #     use_residual=use_residual,
-        # )
 
         self.use_smplx = True
         self.regressor = DynamicsSubNet(use_smplx=self.use_smplx, dtype=torch.float32)

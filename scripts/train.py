@@ -1,3 +1,7 @@
+import sys, os
+cur_file_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(cur_file_path, '..'))
+
 import logging
 import os
 import random

@@ -11,7 +11,7 @@ from dnd.models.smpl.lbs import rot_mat_to_euler, rot_mat_to_euler_T, euler_to_r
 from dnd.utils.geometry import batch_rodrigues, rotation_matrix_to_angle_axis
 from dnd.utils.img_utils import (get_video_crop, get_single_image_crop,
                                             normalize_2d_kp, split_into_chunks,
-                                            transfrom_keypoints, transfrom_keypoints24, trans_point2d)
+                                            transfrom_keypoints, trans_point2d)
 from dnd.utils.kp_utils import convert_kps
 import cv2
 import random

@@ -20,7 +20,6 @@ import random
 
 import cv2
 import numpy as np
-import tensorflow as tf
 import torch
 import torchvision.transforms as transforms
 import torchvision.transforms.functional as F
@@ -519,32 +518,3 @@ def split_into_chunks_tcmr(vid_names, seqlen, stride, is_train=True, match_vibe=
         video_start_end_indices += start_finish
 
     return video_start_end_indices
-
-
-def read_image_tfrec(filename, f_ids):
-    desc = {
-        'image/encoded': 'byte',
-        'image/xys': 'float'
-    }
-
-    filename, s_id = filename.decode('ascii').split('tfrecord')
-    filename = filename + 'tfrecord'
-    s_id = int(s_id.split('-')[-1])
-    #  = list(tfrecord.tfrecord_loader(filename, None, desc))
-    loader = list(tf.python_io.tf_record_iterator(filename))
-    # sess = tf.Session()
-
-    serialized_ex = loader[s_id]
-    example = tf.train.Example()
-    example.ParseFromString(serialized_ex)
-    images_data = example.features.feature['image/encoded'].bytes_list.value
-    video = []
-    for f_id in f_ids:
-        # image = np.expand_dims(sess.run(tf.image.decode_jpeg(images_data[int(f_id)], channels=3)), axis=0)
-        image = cv2.cvtColor(cv2.imdecode(np.fromstring(images_data[int(f_id)], dtype=np.uint8), cv2.IMREAD_UNCHANGED), cv2.COLOR_BGR2RGB)
-        # image = sess.run(tf.image.decode_jpeg(images_data[int(f_id)], channels=3))
-        image = convert_cvimg_to_tensor(image)
-        # image = torch.from_numpy(sess.run(tf.image.decode_jpeg(images_data[int(f_id)], channels=3)))
-        video.append(image)
-    return video
-    # N = int(example.features.feature['meta/N'].int64_list.value[0])

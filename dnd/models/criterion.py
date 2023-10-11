@@ -35,10 +35,6 @@ class LossTransl(nn.Module):
         self.e_pose_loss_weight = WEIGHT['POSE_W']
         self.e_shape_loss_weight = WEIGHT['SHAPE_W']
 
-        self.vel_reg_weight = WEIGHT['VEL_REG']
-        self.acc_reg_weight = WEIGHT['ACC_REG']
-        self.transl_reg_weight = WEIGHT['TRANSL_REG']
-
         self.contact_weight = WEIGHT['CONTACT_W']
         self.inertia_weight = WEIGHT['INERTIA_W']
         self.global_transl_weight = WEIGHT['G_TRANSL_W']
@@ -226,9 +222,6 @@ class LossTransl(nn.Module):
             loss_dict['loss_pose'] = loss_pose
 
             # loss_smooth_vel, loss_smooth_acc = self.smooth_losses(pred_pose, real_pose)
-
-            # loss_dict['loss_smooth_vel'] = self.vel_reg_weight * loss_smooth_vel
-            # loss_dict['loss_smooth_acc'] = self.acc_reg_weight * loss_smooth_acc
 
         if mot_D is not None and not self.debug:
             pred_global_motion = preds['global_motion']

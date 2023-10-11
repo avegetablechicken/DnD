@@ -15,10 +15,8 @@ from dnd.utils.geometry import (quat2mat, rot6d_to_rotmat,
 
 from .smpl.lbs import batch_rodrigues, rot_mat_to_euler, vertices2joints, euler_to_rot_mat2, rot_mat_to_euler_T
 from .smpl.SMPL import H36M_TO_J14, SMPL_MEAN_PARAMS, SMPL_layer_dynamics
-from .smpl.SMPL_quat import SMPL_quat_layer_dynamics
 from .smpl.model_smplx import SMPL as SMPL_x
 import torch.nn.functional as F
-from .layers.positional_encoding import PositionalEncoding
 import cvxpy as cp
 from cvxpylayers.torch import CvxpyLayer
 
