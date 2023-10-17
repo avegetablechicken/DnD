@@ -422,7 +422,7 @@ class DynamicsSubNet(nn.Module):
             # [B, T, C]
             input_x = pred_euler_angle
             # [B, T2, T, 1]
-            prob_map = self.conv_map(input_x).clone()[:, :, :, None]
+            prob_map = self.attentive(input_x).clone()[:, :, :, None]
 
             pred_euler_angle_new = torch.sum(prob_map * pred_euler_angle[:, None, :, :], dim=2).clone()
             pred_transl_new = torch.sum(prob_map * pred_transl[:, None, :, :], dim=2).clone()
