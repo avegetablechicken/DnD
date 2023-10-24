@@ -408,7 +408,7 @@ class DynamicsSubNet(nn.Module):
         # pred_transl, pred_aa, pred_shape = x[:, :, :3], x[:, :, 3:-10], x[:, :, -10:]
         pred_transl, pred_rotmat, pred_shape = x[:, :, :3], x[:, :, 3:-10], x[:, :, -10:]
         # pred_rotmat = batch_rodrigues(pred_aa.reshape(-1, 3)).reshape(-1, seq_len, 24, 3, 3)
-        pred_rotmat = pred_rotmat.reshape(-1, seq_len, 24, 3, 3)
+        # pred_rotmat = pred_rotmat.reshape(-1, seq_len, 24, 3, 3)
 
         pred_rotmat = pred_rotmat.reshape(-1, seq_len, 24, 3, 3)
         pred_rotmat = pred_rotmat.transpose(0, 1).reshape(seq_len, -1, 3, 3)
@@ -582,8 +582,12 @@ class DynamicsSubNet(nn.Module):
             #     M_inv = torch.inverse(M)
             if t < seq_len - 1:
                 R_cam_T = temporal_i_angular_rotmat[:, t - 1]
-
-                ddq = M_inv.matmul(kp_q[:, [t - 1], :] * (inp_q_new[:, [t], :] - q_list[t - 1]) - kd_q[:, [t - 1], :] * dq_list[t - 1] + alpha_q[:, [t - 1], :])
+                _alpha = torch.concat([alpha_t[:, [t - 1], :], alpha_q[:, [t - 1], :]], dim=2)
+                _inp_new = torch.concat([inp_t[:, [t], :], inp_q[:, [t], :]], dim=2)
+                _q_list = torch.concat([local_t_list[t - 1], q_list[t - 1]], dim=2)
+                _dq_list = torch.concat([local_dt_list[t - 1], dq_list[t - 1]], dim=2)
+                ddq = M_inv.matmul((kp[:, [t - 1], :] * (_inp_new - _q_list) - kd[:, [t - 1], :] * _dq_list + _alpha).transpose(1, 2)).transpose(1, 2)[:, :, 3:]
+                # ddq = Mq_inv.matmul((kp_q[:, [t - 1], :] * (inp_q_new[:, [t], :] - q_list[t - 1]) - kd_q[:, [t - 1], :] * dq_list[t - 1] + alpha_q[:, [t - 1], :]).transpose(1, 2)).transpose(1, 2)
                 local_ddt = kp_t[:, [t - 1], :] * (inp_t[:, [t], :] - local_t_list[t - 1]) - kd_t[:, [t - 1], :] * local_dt_list[t - 1] + alpha_t[:, [t - 1], :]
 
                 # ddq = alpha_q[:, [t - 1], :]

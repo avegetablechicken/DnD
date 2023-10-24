@@ -429,7 +429,7 @@ def get_default_transform():
 
 
 def split_into_chunks(db, seqlen, stride, filtered=False):
-    vid_names = db['vid_name']
+    vid_names = db['vid_name'].reshape(-1)
     if 'frame_id' in db.keys():
         frame_ids = db['frame_id']
     video_start_end_indices = []
@@ -449,7 +449,7 @@ def split_into_chunks(db, seqlen, stride, filtered=False):
         if filtered:
             start_finish = filter_ids(frame_ids, start_finish, seqlen)
             if 'joints3D' in db.keys():
-                start_finish = filter_abnormal_motions(db['joints3D'], start_finish, seqlen)
+                start_finish = filter_abnormal_motions(db['joints3D'].detach().cpu().numpy(), start_finish, seqlen)
 
         video_start_end_indices += start_finish
 

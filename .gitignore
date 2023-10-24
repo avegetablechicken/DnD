@@ -120,3 +120,5 @@ exp
 *.mp4
 *.pt
 *.tar
+
+/*.code-workspace

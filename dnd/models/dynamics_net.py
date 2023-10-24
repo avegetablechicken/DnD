@@ -28,7 +28,7 @@ from .subnet import DynamicsSubNet
 class DND(nn.Module):
     def __init__(
             self,
-            pretrained='data/base_data/spin_model_checkpoint.pth.tar',
+            pretrained='model_files/spin_model_checkpoint.pth.tar',
             **cfg
     ):
 

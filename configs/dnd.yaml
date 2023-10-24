@@ -2,30 +2,30 @@ DATASET:
   TRAINSET_LIST_3D:
     - NAME: 'ThreeDPW'
       ROOT: './data/preprocessed_data/'
-      ANN_FILE: '3dpw_train_occ_db.pt'
+      ANN_FILE: '3dpw_train_25fps_db.pt'
       W: 0.3
-    - NAME: 'Human36M'
-      ROOT: './data/preprocessed_data/'
-      ANN_FILE: 'h36m_train_25fps_occ_smpl_db.pt'
-      W: 0.3
-    - NAME: 'AMASS'
-      ROOT: './data/preprocessed_data/'
-      ANN_FILE: 'amass_kp49.pt'
-      W: 0.4
+    # - NAME: 'Human36M'
+    #   ROOT: './data/preprocessed_data/'
+    #   ANN_FILE: 'h36m_train_25fps_occ_smpl_db.pt'
+    #   W: 0.3
+    # - NAME: 'AMASS'
+    #   ROOT: './data/preprocessed_data/'
+    #   ANN_FILE: 'amass_kp49.pt'
+    #   W: 0.4
   VALSET:
     NAME: 'ThreeDPW'
     ROOT: './data/preprocessed_data_val/'
-    ANN_FILE: '3dpw_test_db.pt'
+    ANN_FILE: '3dpw_test_25fps_db.pt'
   TESTSET:
-    - NAME: 'Human36M'
-      ROOT: './data/preprocessed_data_val/'
-      ANN_FILE: 'h36m_test_front_25fps_tight_smpl_db.pt'
+    # - NAME: 'Human36M'
+    #   ROOT: './data/preprocessed_data_val/'
+    #   ANN_FILE: 'h36m_test_front_25fps_tight_smpl_db.pt'
     - NAME: 'ThreeDPW'
       ROOT: './data/preprocessed_data_val/'
-      ANN_FILE: '3dpw_val_db.pt'
+      ANN_FILE: '3dpw_val_25fps_db.pt'
     - NAME: 'ThreeDPW'
       ROOT: './data/preprocessed_data_val/'
-      ANN_FILE: '3dpw_test_db.pt'
+      ANN_FILE: '3dpw_test_25fps_db.pt'
 DATA_PRESET:
   SEQLEN: 32
   TEST_OVERLAP: True
@@ -51,7 +51,7 @@ LOSS:
 TEST:
   EVAL_TYPE: 'all'
 TRAIN:
-  NUM_WORKERS: 8
+  NUM_WORKERS: 0
   BATCH_SIZE: 32
   BEGIN_EPOCH: 0
   END_EPOCH: 30

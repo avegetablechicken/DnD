@@ -298,7 +298,7 @@ class Trainer(object):
 
                 # print(pred_verts.shape, target_theta.shape, pred_j3d.shape, target_j3d.shape)
                 for b in range(batch):
-                    vid = target['vid_name'][b]
+                    vid = target['vid_name'][b][0]
                     if vid not in self.evaluation_accumulators.keys():
                         self.evaluation_accumulators[vid] = defaultdict(list)
 

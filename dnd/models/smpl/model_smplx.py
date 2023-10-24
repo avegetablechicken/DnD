@@ -83,7 +83,7 @@ class SMPL(_SMPL):
             body_pose=smpl_output.body_pose,
             joints=joints,
             betas=smpl_output.betas,
-            joints24=smpl_output.joints24,
+            joints24=smpl_output.joints,
             full_pose=smpl_output.full_pose)
         return output
 

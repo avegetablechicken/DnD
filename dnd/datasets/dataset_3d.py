@@ -16,6 +16,8 @@ from dnd.utils.kp_utils import convert_kps
 import cv2
 import random
 
+c2c = lambda tensor: tensor.detach().cpu().numpy()
+
 
 def quaternion_to_aa(quaternion):
     '''
@@ -69,7 +71,7 @@ class Dataset3D(data.Dataset):
 
     def load_db(self):
         if osp.isfile(self._ann_file):
-            db = joblib.load(self._ann_file, 'r')
+            db = torch.load(self._ann_file)
         else:
             raise ValueError(f'{self._ann_file} do not exists.')
 
@@ -78,9 +80,9 @@ class Dataset3D(data.Dataset):
 
     def get_sequence(self, start_index, end_index, data):
         if start_index != end_index:
-            return data[start_index:end_index + 1].copy()
+            return c2c(data[start_index:end_index + 1])
         else:
-            return data[start_index:start_index + 1].copy().repeat(self.seqlen, axis=0)
+            return c2c(data[start_index:start_index + 1]).repeat(self.seqlen, axis=0)
 
     def get_single_item(self, index):
         start_index, end_index = self.vid_indices[index]
@@ -89,7 +91,9 @@ class Dataset3D(data.Dataset):
             if self.is_train and 'joints2D_14' in self.db.keys():
                 kp_2d = convert_kps(self.get_sequence(start_index, end_index, self.db['joints2D_14']), src='common', dst='spin')
             else:
-                kp_2d = convert_kps(self.get_sequence(start_index, end_index, self.db['joints2D']), src='common', dst='spin')
+                kp_2d = self.get_sequence(start_index, end_index, self.db['joints2D'])
+                kp_2d = np.concatenate((kp_2d, np.ones(list(kp_2d.shape[:2]) + [1])), axis=2)
+                kp_2d = convert_kps(kp_2d, src='common', dst='spin')
             kp_3d = self.get_sequence(start_index, end_index, self.db['joints3D'])
         elif self.dataset_name == 'h36m':
             kp_2d = self.get_sequence(start_index, end_index, self.db['joints2D'])
@@ -197,13 +201,11 @@ class Dataset3D(data.Dataset):
         elif self.dataset_name == 'amass':
             thetas = self.get_sequence(start_index, end_index, self.db['theta'])
             kp_3d = self.get_sequence(start_index, end_index, self.db['joints3D_49'])
-            root, pose, shape, _, raw_contact, _ = (
+            root, pose, shape, raw_contact = (
                 thetas[:, :3],
                 thetas[:, 3:72 + 3],
                 thetas[:, 75:85],
-                thetas[:, 85:85 + 72],
-                thetas[:, 157:165],
-                thetas[:, 165:],
+                thetas[:, 85:85 + 12]
             )
             contact = torch.zeros(self.seqlen, 6, 2).float()
 
@@ -220,15 +222,15 @@ class Dataset3D(data.Dataset):
             # pose_rotmat = batch_rodrigues(pose_theta.reshape(-1, 3)).reshape(self.seqlen, -1, 3, 3)
             # pose_euler = rot_mat_to_euler_T(pose_rotmat.reshape(self.seqlen, 24, 3, 3)).contiguous()
 
-            raw_contact = torch.from_numpy(raw_contact[:, [0, 1, 4, 5]]).float()
-            contact[:, 2, 0] = raw_contact[:, 1]
-            contact[:, 2, 1] = 1
-            contact[:, 3, 0] = raw_contact[:, 3]
-            contact[:, 3, 1] = 1
-            contact[:, 4, 0] = raw_contact[:, 0]
-            contact[:, 4, 1] = 1
-            contact[:, 5, 0] = raw_contact[:, 2]
-            contact[:, 5, 1] = 1
+            # raw_contact = torch.from_numpy(raw_contact[:, [0, 1, 4, 5]]).float()
+            # contact[:, 2, 0] = raw_contact[:, 1]
+            # contact[:, 2, 1] = 1
+            # contact[:, 3, 0] = raw_contact[:, 3]
+            # contact[:, 3, 1] = 1
+            # contact[:, 4, 0] = raw_contact[:, 0]
+            # contact[:, 4, 1] = 1
+            # contact[:, 5, 0] = raw_contact[:, 2]
+            # contact[:, 5, 1] = 1
 
             # hybrik_pred = np.concatenate((root, pose, shape), axis=1)
 
@@ -338,7 +340,7 @@ class Dataset3D(data.Dataset):
             'contact': contact,
             'transl': torch.from_numpy(root).float(),
             'w_transl': torch.from_numpy(w_transl).float(),
-            'vid_name': self.db['vid_name'][start_index],
+            'vid_name': self.db['vid_name'][start_index:start_index + 1].tolist(),
             'image_name': image_name,
             'bbox': torch.from_numpy(bbox.copy()).float(),    # bbox: [c_x, c_y, w, h]
             'test_tensor': torch.arange(start_index, end_index + 1)[:, None].float(),
