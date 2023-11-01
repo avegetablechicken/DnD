@@ -166,11 +166,16 @@ class Dataset3D(data.Dataset):
             w_smpl = torch.ones(self.seqlen).float()
             w_3d = torch.ones(self.seqlen).float()
 
-            if self.is_train:
-                contact = self.get_sequence(start_index, end_index, self.db['contact'])
-                contact = torch.from_numpy(contact.copy()).float()
-            else:
-                contact = torch.zeros(self.seqlen, 6, 2).float()
+            contact = torch.zeros(self.seqlen, 6, 2).float()
+            raw_contact = torch.from_numpy(self.get_sequence(start_index, end_index, self.db['contact'])[:, [7, 10, 8, 11]]).float()
+            contact[:, 2, 0] = raw_contact[:, 1]
+            contact[:, 2, 1] = 1
+            contact[:, 3, 0] = raw_contact[:, 3]
+            contact[:, 3, 1] = 1
+            contact[:, 4, 0] = raw_contact[:, 0]
+            contact[:, 4, 1] = 1
+            contact[:, 5, 0] = raw_contact[:, 2]
+            contact[:, 5, 1] = 1
 
             hybrik_quat = self.get_sequence(start_index, end_index, self.db['thetas'])
             hybrik_betas = self.get_sequence(start_index, end_index, self.db['betas'])
@@ -223,15 +228,15 @@ class Dataset3D(data.Dataset):
             # pose_rotmat = batch_rodrigues(pose_theta.reshape(-1, 3)).reshape(self.seqlen, -1, 3, 3)
             # pose_euler = rot_mat_to_euler_T(pose_rotmat.reshape(self.seqlen, 24, 3, 3)).contiguous()
 
-            # raw_contact = torch.from_numpy(raw_contact[:, [0, 1, 4, 5]]).float()
-            # contact[:, 2, 0] = raw_contact[:, 1]
-            # contact[:, 2, 1] = 1
-            # contact[:, 3, 0] = raw_contact[:, 3]
-            # contact[:, 3, 1] = 1
-            # contact[:, 4, 0] = raw_contact[:, 0]
-            # contact[:, 4, 1] = 1
-            # contact[:, 5, 0] = raw_contact[:, 2]
-            # contact[:, 5, 1] = 1
+            raw_contact = torch.from_numpy(raw_contact[:, [7, 10, 8, 11]]).float()
+            contact[:, 2, 0] = raw_contact[:, 1]
+            contact[:, 2, 1] = 1
+            contact[:, 3, 0] = raw_contact[:, 3]
+            contact[:, 3, 1] = 1
+            contact[:, 4, 0] = raw_contact[:, 0]
+            contact[:, 4, 1] = 1
+            contact[:, 5, 0] = raw_contact[:, 2]
+            contact[:, 5, 1] = 1
 
             # hybrik_pred = np.concatenate((root, pose, shape), axis=1)
 
