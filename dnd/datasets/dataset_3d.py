@@ -200,7 +200,7 @@ class Dataset3D(data.Dataset):
             hybrik_pred = np.concatenate((hybrik_transl, hybrik_rotmat, hybrik_betas), axis=1)
 
         elif self.dataset_name == 'amass':
-            thetas = self.get_sequence(start_index, end_index, self.db['theta'])
+            thetas = self.get_sequence(start_index, end_index, self.db['thetas'])
             kp_3d = self.get_sequence(start_index, end_index, self.db['joints3D_49'])
             root, pose, shape, raw_contact = (
                 thetas[:, :3],
