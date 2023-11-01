@@ -4,22 +4,22 @@ DATASET:
       ROOT: './data/preprocessed_data/'
       ANN_FILE: '3dpw_train_25fps_db.pt'
       W: 0.3
-    # - NAME: 'Human36M'
-    #   ROOT: './data/preprocessed_data/'
-    #   ANN_FILE: 'h36m_train_25fps_occ_smpl_db.pt'
-    #   W: 0.3
-    # - NAME: 'AMASS'
-    #   ROOT: './data/preprocessed_data/'
-    #   ANN_FILE: 'amass_kp49.pt'
-    #   W: 0.4
+    - NAME: 'Human36M'
+      ROOT: './data/preprocessed_data_val/'
+      ANN_FILE: 'h36m_test_25fps_dynamic_db.pt'
+      W: 0.3
+    - NAME: 'AMASS'
+      ROOT: './data/preprocessed_data/'
+      ANN_FILE: 'amass_kp49.pt'
+      W: 0.4
   VALSET:
     NAME: 'ThreeDPW'
     ROOT: './data/preprocessed_data_val/'
     ANN_FILE: '3dpw_test_25fps_db.pt'
   TESTSET:
-    # - NAME: 'Human36M'
-    #   ROOT: './data/preprocessed_data_val/'
-    #   ANN_FILE: 'h36m_test_front_25fps_tight_smpl_db.pt'
+    - NAME: 'Human36M'
+      ROOT: './data/preprocessed_data_val/'
+      ANN_FILE: 'h36m_test_25fps_dynamic_db.pt'
     - NAME: 'ThreeDPW'
       ROOT: './data/preprocessed_data_val/'
       ANN_FILE: '3dpw_val_25fps_db.pt'
