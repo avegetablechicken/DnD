@@ -97,6 +97,7 @@ class Dataset3D(data.Dataset):
             kp_3d = self.get_sequence(start_index, end_index, self.db['joints3D'])
         elif self.dataset_name == 'h36m':
             kp_2d = self.get_sequence(start_index, end_index, self.db['joints2D'])
+            kp_2d = np.concatenate((kp_2d, np.ones(list(kp_2d.shape[:2]) + [1])), axis=2)
             if self.is_train:
                 # kp_3d = self.get_sequence(start_index, end_index, self.db['joints3D_49'])
                 kp_xyz17 = self.get_sequence(start_index, end_index, self.db['xyz_17'])
